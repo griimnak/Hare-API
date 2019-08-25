@@ -2,7 +2,7 @@
 Single file, json api micro-framework, inspired by Falcon.py & Bottle.py
 
 
-Fast API building, with the benefits of php
+Fast API building, with the performance of php
 -------------------------------------------------------
 #### Falcon.py:
 
