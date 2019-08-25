@@ -65,7 +65,7 @@ return [
 ];
 ```
 
-##### Set `'resources_path'` to a dir relative to <b>hare.php</b>
+###### Set `'resources_path'` to a dir relative to <b>hare.php</b>
 
 Now for the easy part
 
