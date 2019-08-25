@@ -99,6 +99,18 @@ $api->prepare_req($_GET['uri']);
 $api->dispatch();
 ```
 
+#### Clean routing
+
+```php
+// will accept any strings like http://localhost/hello/bob
+$api->add_resource('GET', '/hello/{str}', 'ResourceClass');
+
+// will accept ints only
+$api->add_resource('GET', '/user/id/{int}', 'ResourceClass');
+
+// accepts anything
+$api->add_resource('GET', '/test/{*}', 'ResourceClass');
+```
 
 ### Resources
 
