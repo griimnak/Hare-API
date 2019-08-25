@@ -40,3 +40,33 @@ class TestResource {
 $api = new Hare('inc.config.php');
 $api->add_resource('GET', '/test', new TestResource());
 ```
+
+Usage *WIP*
+----------------
+
+- In `public_html`, `htdocs` or `wwroot`, etc.
+
+`index.php`:
+
+Import the single framework file from your api dir, <b>it should not be in your public folder. (for security)</b
+
+```php
+<?php
+require_once ('../myapi/hare.php');
+```
+
+Then create and instance of the framework, with a location of your config file relative to `hare.php`
+
+``php
+$api = new Hare('inc.config.php');
+```
+
+That's basically it for setup, you're ready to add resource routes now.
+
+```php
+// This way below imports the class from your resources_path set in your `config.php`
+$api->add_resource('METHOD', '/url', 'ResourceClass');
+
+// or just import the raw object your own way
+$api->add_resource('METHOD', '/url', new ResourceClass());
+```
