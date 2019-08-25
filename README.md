@@ -48,7 +48,7 @@ Usage *WIP*
 
 `index.php`:
 
-Import the single framework file from your api dir, <b>it should not be in your public folder. (for security)</b
+Import the single framework file from your api dir, <b>it should not be in your public folder. (for security)</b>
 
 ```php
 <?php
