@@ -45,7 +45,7 @@ $api->add_resource('GET', '/test', new TestResource());
 
 Hare was developed and tested on apache + php 7.3, but it should work on php 5.3+ and nginx etc.
 
-##### Steps
+#### Steps
 - Create entry file in <b>public_html</b> or equivalent. (eg. `index.php` or `api.php`.)
 
 - Back out from <b>public_html</b> or equivalent (`cd ..`) and make a dir for your api/app (`mkdir yourapp`).
@@ -69,11 +69,11 @@ return [
 
 Now for the easy part
 
-##### Entry file setup
+#### Entry file setup
 
 (eg. `index.php` or `api.php`)
 
-```
+```php
 <?php
 require_once ('../path/to/hare.php');
 
@@ -98,7 +98,7 @@ $api->prepare_req($_GET['uri']);
 $api->dispatch();
 ```
 
-##### Resources
+#### Resources
 
 The Resource Object must be a Class that has atleast a `on_get()` or `on_post` function.
 
