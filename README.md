@@ -1,2 +1,2 @@
 # Hare API
-Single file, JSON API micro-framework, inspired by Falcon.py & Bottle.py
+Single file, json api micro-framework, inspired by Falcon.py & Bottle.py
