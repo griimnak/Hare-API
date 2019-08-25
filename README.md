@@ -43,6 +43,8 @@ class TestResource {
 
 $api = new Hare('inc.config.php');
 $api->add_resource('GET', '/test', new TestResource());
+$api->prepare_req($_GET['uri']);
+$api->dispatch();
 ```
 
 # Getting started
