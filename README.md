@@ -57,7 +57,7 @@ require_once ('../myapi/hare.php');
 
 Then create and instance of the framework, with a location of your config file relative to `hare.php`
 
-``php
+```php
 $api = new Hare('inc.config.php');
 ```
 
