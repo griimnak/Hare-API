@@ -3,7 +3,7 @@
 </p>
 
 # Hare API
-Single file, json api micro-framework, inspired by Falcon.py & Bottle.py
+*WIP* Single file, json api micro-framework, inspired by Falcon.py & Bottle.py
 
 
 Fast API building, with the performance of php
