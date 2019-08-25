@@ -41,32 +41,89 @@ $api = new Hare('inc.config.php');
 $api->add_resource('GET', '/test', new TestResource());
 ```
 
-Usage *WIP*
-----------------
+# Getting started
 
-- In `public_html`, `htdocs` or `wwroot`, etc.
+Hare was developed and tested on apache + php 7.3, but it should work on php 5.3+ and nginx etc.
 
-`index.php`:
+##### Steps
+- Create entry file in <b>public_html</b> or equivalent. (eg. `index.php` or `api.php`.)
 
-Import the single framework file from your api dir, <b>it should not be in your public folder. (for security)</b>
+- Back out from <b>public_html</b> or equivalent (`cd ..`) and make a dir for your api/app (`mkdir yourapp`).
+
+- Go into your app/api dir (`cd yourapp`), extract <b>hare.php</b> to your app/api dir root.
+
+- Create a config file (eg `config.php`) in your app/api dir with the following template:
 
 ```php
 <?php
-require_once ('../myapi/hare.php');
+return [
+    'resources_path' => 'resources/',
+    'db_host' => '',
+    'db_user' => '',
+    'db_pass' => '',
+    'db_name' => ''
+];
 ```
 
-Then create and instance of the framework, with a location of your config file relative to `hare.php`
+##### Set `'resources_path'` to a dir relative to <b>hare.php</b>
+
+Now for the easy part
+
+##### Entry file setup
+
+(eg. `index.php` or `api.php`)
+
+```
+<?php
+require_once ('../path/to/hare.php');
+
+// create api instance
+$api = Hare("path/to/config.php");
+// (path relative to hare.php)
+
+// add resources!
+//      Method GET or POST    Url      Class
+$api->add_resource('GET', '/url, 'ResourceClass');
+// ('ResourceClass'.php loads from 'resources_path' in config.php)
+
+// Or do it with a raw class and import it your way
+$api->add_resource('GET', '/url', new ResourceClass());
+
+// When done, prepare request
+$api->prepare_req($_GET['uri']);
+
+// .. Could put some middlewares here evenentually
+
+// And dipsatch
+$api->dispatch();
+```
+
+##### Resources
+
+The Resource Object must be a Class that has atleast a `on_get()` or `on_post` function.
+
+It should also have `namespace resources;` as the first line always so the autoloader can load it.
 
 ```php
-$api = new Hare('inc.config.php');
-```
+<?php
+namespace resources;
 
-That's basically it for setup, you're ready to add resource routes now.
-
-```php
-// This way below imports the class from your resources_path set in your `config.php`
-$api->add_resource('METHOD', '/url', 'ResourceClass');
-
-// or just import the raw object your own way
-$api->add_resource('METHOD', '/url', new ResourceClass());
-```
+class MyResource {
+  // GET request example
+  function on_get($req) {
+      // make your json objects with arrays that will later on get encoded.
+      $quote = array(
+          "api" => "Hare API",
+          "author" => "griimnak"
+      );
+      
+      // set response content
+      $this->_resp = $quote;
+      
+      // you can also set the status code of the response (default 200)
+      $this->_status = 500;
+      
+      // check out $request args for this resource
+      print_r($req);
+  }
+}
