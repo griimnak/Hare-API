@@ -99,7 +99,7 @@ $api->prepare_req($_GET['uri']);
 $api->dispatch();
 ```
 
-##### Clean routing
+###### Clean routing
 
 ```php
 // will accept any strings like http://localhost/hello/bob
