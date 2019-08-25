@@ -36,7 +36,7 @@ class Hare {
 
         // load config
         if(!isset($config_path)) {
-            die('CONFIG NOT LOADED (try $app = new Hare("path/to/config.php");)');
+            die('NO CONFIG SUPPLIED (try $app = new Hare("path/to/config.php");)');
         }
 
         // append
@@ -64,11 +64,11 @@ class Hare {
     }
 
     /**
-     * Resource load method
+     * Response method - loads method and reponds to get/post
      * 
      * @param str|Object $resource - Location or Object to load.
      */
-    private function load_resource($resource) {
+    private function response($resource) {
         if(!is_object($resource['resource'])) {
             // import resource via namespace
             $full_name = $this->_config['resources_path'] . ucfirst($resource['resource']);
@@ -97,7 +97,7 @@ class Hare {
 
         // done
         http_response_code($status);
-        print json_encode($resource['resource']->_resp);
+        echo json_encode($resource['resource']->_resp);
     }
     
     /**
@@ -183,6 +183,16 @@ class Hare {
     }
 
     /**
+     * The dispatcher
+     * 
+     */
+    public function dispatch() {
+        // if prepare_req successfully found a match
+        if(isset($this->_found_id))
+            $this->response($this->_resources[$this->_found_id]);
+    }
+
+    /**
      * Validator helper
      * 
      * @param str|int $key
@@ -192,30 +202,15 @@ class Hare {
         switch($key) {
             case '{int}':
                 return (int)$val;
-                break;
             case '{str}':
-                if(ctype_alnum($val)) {
+                if(ctype_alnum($val)) 
                     return $val;
-                } else {
+                else 
                     return false;
-                }
-                break;
             case '{*}':
                 return $val;
-                break;
         }
         return false;
-    }
-
-    /**
-     * The dispatcher
-     * 
-     */
-    public function dispatch() {
-        // if prepare_req successfully found a match
-        if(isset($this->_found_id)) {
-            $this->load_resource($this->_resources[$this->_found_id]);
-        }
     }
 
     // Public utility -------------------------------------------------
