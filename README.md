@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://i.imgur.com/imSsWAn.jpg" alt="Hare"/>
+</p>
+
 # Hare API
 Single file, json api micro-framework, inspired by Falcon.py & Bottle.py
 
