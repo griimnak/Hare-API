@@ -134,7 +134,7 @@ class MyResource {
       
       // set headers
       $this->headers = array (
-        'X-Custom-Header1' => 'val1,
+        'X-Custom-Header1' => 'val1',
         'X-Custom-Header2' => 'val2'
       );
       
