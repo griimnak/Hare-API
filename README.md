@@ -43,9 +43,6 @@ class TestResource {
 
 $api = new Hare('inc.config.php');
 $api->add_resource('GET', '/test', new TestResource());
-
-$api->prepare_req($_GET['uri']);
-$api->dispatch();
 ```
 
 # Getting started
@@ -85,16 +82,14 @@ Now for the easy part
 <?php
 require_once ('../path/to/hare.php');
 
-// create api instance
+// create api instance (conf path relative to hare.php)
 $api = Hare("path/to/config.php");
-// (path relative to hare.php)
 
-// add resources!
-//      Method GET or POST    Url      Class
+// add resources
 $api->add_resource('GET', '/url, 'ResourceClass');
 // ('ResourceClass'.php loads from 'resources_path' in config.php)
 
-// Or do it with a raw class and import it your way
+// (Or do it with a raw class and import it your way)
 $api->add_resource('GET', '/url', new ResourceClass());
 
 // When done, prepare request
@@ -138,11 +133,17 @@ class MyResource {
           "author" => "griimnak"
       );
       
+      // set headers
+      $this->headers = array (
+        'X-Custom-Header1' => 'val1,
+        'X-Custom-Header2' => 'val2'
+      );
+      
       // set response content
-      $this->_resp = $quote;
+      $this->response = $quote;
       
       // you can also set the status code of the response (default 200)
-      $this->_status = 500;
+      $this->status = 500;
       
       // check out $request args for this resource
       print_r($req);
