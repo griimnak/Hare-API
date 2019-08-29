@@ -36,7 +36,7 @@ class TestResource {
       'data' => 'This is Hare. Its like falcon but with the speed of php :o'
     );
     
-    $this->_resp = $data;
+    $this->response = $data;
   }
 }
 
