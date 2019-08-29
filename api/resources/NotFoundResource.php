@@ -1,17 +1,18 @@
 <?php
 namespace resources;
 
-class QuoteResource {
-    
+use Hare;
+
+class NotFoundResource {
     // def on_get(self, req, resp):
     function on_get($req) {
         // quote = {}
         $quote = array(
-            "quote" => "I've always been more interested in the future than in the past",
-            "author" => "Grace Hopper"
+            "error" => "The resource you're looking for doesn't exist."
         );
 
         // resp.media = quote
         $this->response = $quote;
+        $this->status = 404;
     }
 }

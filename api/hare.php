@@ -44,6 +44,8 @@ class Hare {
 
         // register autoloader
         $this->register_autoloader();
+
+        Cache::setCacheDir('cache');
     }
 
     /**
@@ -89,15 +91,22 @@ class Hare {
         }
 
         // status
-        if(!isset($resource['resource']->_status)){
+        if(!isset($resource['resource']->status)){
             $status = 200;
         } else {
-            $status = $resource['resource']->_status;
+            $status = $resource['resource']->status;
+        }
+
+        //header
+        if(isset($resource['resource']->headers)) {
+            foreach($resource['resource']->headers as $h => $v) {
+                header("$h:$v");
+            }
         }
 
         // done
         http_response_code($status);
-        echo json_encode($resource['resource']->_resp);
+        echo json_encode($resource['resource']->response);
     }
     
     /**
@@ -212,19 +221,39 @@ class Hare {
         }
         return false;
     }
+}
 
-    // Public utility -------------------------------------------------
+class Cache {
+    private static $_cache_dir;
 
-    public static function redirect($location) {
-        header('Location: '.$location); die();
+    public static function setCacheDir($dir) {
+        self::$_cache_dir = $dir;
     }
 
-    public static function redirect_self() {
-        header('Location: '.__URL__); die();
+    public static function get($func_name, $params, $expiry_seconds) {
+        $write = true;
+        $cache_path = self::getCachePath($func_name, $params);
+        if(is_file($cache_path) && ((time() - filemtime($cache_path) < $expiry_seconds || $expiry_seconds == 0))) {
+            return unserialize(file_get_contents($cache_path));
+        } else {
+            return self::refresh($func_name, $params);
+        }
     }
 
-    public static function refresh() {
-        header('Refresh:0'); die();
+    public static function refresh($func_name, $params) {
+        $test = call_user_func_array($func_name, $params);
+        $cache_path = self::getCachePath($func_name, $params);
+        if(!is_dir(dirname($cache_path))) {
+            mkdir(dirname($cache_path), 0744, true);
+        }
+        file_put_contents($cache_path, serialize($test));
+        return $test;
     }
-    
+
+    public static function getCachePath($func_name, $params) {
+        $id = md5(implode('', $params));
+        $func_name = str_replace('\\', '_', $func_name);
+        $func_name = str_replace('::', '-', $func_name);
+        return sprintf(ROOT . '%s/%s_%s.php', self::$_cache_dir, $func_name, $id);
+    }
 }

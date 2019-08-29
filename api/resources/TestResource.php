@@ -1,14 +1,12 @@
 <?php
 namespace resources;
 
-class QuoteResource {
-    
+class TestResource {
     // def on_get(self, req, resp):
-    function on_get($req) {
+    function on_post($req) {
         // quote = {}
         $quote = array(
-            "quote" => "I've always been more interested in the future than in the past",
-            "author" => "Grace Hopper"
+            "data" => "This is a test resource!"
         );
 
         // resp.media = quote
