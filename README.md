@@ -40,7 +40,6 @@ class TestResource {
   }
 }
 
-
 $api = new Hare('inc.config.php');
 $api->add_resource('GET', '/test', new TestResource());
 ```
