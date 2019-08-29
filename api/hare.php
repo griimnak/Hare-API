@@ -18,16 +18,14 @@ define('ROOT', dirname(__FILE__).'/');
 
 class Hare {
     public $_resources = array();
-
     private $_config;
     private $_index = 0;
     private $_found_id;
-    
     private $_request;
     private $_params;
-
     /**
      * __init__
+     * @param string $config_path - path to conf.php
      */
     public function __construct($config_path = null) {
         // turn us into a json api
@@ -35,16 +33,14 @@ class Hare {
         header('X-Powered-By: HareAPI v0.0');
 
         // load config
-        if(!isset($config_path)) {
+        if(!isset($config_path))
             die('NO CONFIG SUPPLIED (try $app = new Hare("path/to/config.php");)');
-        }
 
-        // append
+        // append and autoload
         $this->_config = require_once ($config_path);
-
-        // register autoloader
         $this->register_autoloader();
 
+        // set cache path
         Cache::setCacheDir('cache');
     }
 
@@ -57,8 +53,7 @@ class Hare {
 
     /**
      * Autoload method, for compartmentalizing resources
-     * 
-     * @param $_class to load
+     * @param string $_class
      */
     private static function autoload_class($_class) {
         $file_path = ROOT . str_replace('\\', '/', $_class) . '.php';
@@ -67,8 +62,7 @@ class Hare {
 
     /**
      * Response method - loads method and reponds to get/post
-     * 
-     * @param str|Object $resource - Location or Object to load.
+     * @param string|Object $resource - Location or Object to load.
      */
     private function response($resource) {
         if(!is_object($resource['resource'])) {
@@ -112,9 +106,9 @@ class Hare {
     /**
      * Add method - Adds resource to Hare $app instance
      * 
-     * @param str $method HTTP request method
-     * @param str $uri uri / resource handle
-     * @param str|Object resource location or Object
+     * @param string $method HTTP request method
+     * @param string $uri uri / resource handle
+     * @param string|Object resource location or Object
      */
     public function add_resource($method, $uri, $resource) {
         // add to array $_resources
@@ -129,8 +123,7 @@ class Hare {
 
     /**
      * Prepare request - prepare $_GET['url']
-     * 
-     * @param get $path
+     * @param string $path
      */
     public function prepare_req(&$path) {
         $uri = isset($path) ? $path : '';
@@ -193,7 +186,7 @@ class Hare {
 
     /**
      * The dispatcher
-     * 
+     * If _found_id == _index, build response
      */
     public function dispatch() {
         // if prepare_req successfully found a match
@@ -203,9 +196,9 @@ class Hare {
 
     /**
      * Validator helper
-     * 
-     * @param str|int $key
-     * @param str|int $val
+     * @param string|int $key
+     * @param string|int $val
+     * @return bool|?
      */
     private function validate_input($key, $val) {
         switch($key) {
@@ -225,13 +218,21 @@ class Hare {
 
 class Cache {
     private static $_cache_dir;
-
+    /**
+     * __init__
+     * @param string $dir
+     */
     public static function setCacheDir($dir) {
         self::$_cache_dir = $dir;
     }
 
+    /**
+     * @param callable $func_name
+     * @param array $params
+     * @param int $expiry_seconds - cache expiry
+     * @return mixed - returns cached code or refreshes
+     */
     public static function get($func_name, $params, $expiry_seconds) {
-        $write = true;
         $cache_path = self::getCachePath($func_name, $params);
         if(is_file($cache_path) && ((time() - filemtime($cache_path) < $expiry_seconds || $expiry_seconds == 0))) {
             return unserialize(file_get_contents($cache_path));
@@ -240,6 +241,12 @@ class Cache {
         }
     }
 
+    /**
+     * Refresh cached resource
+     * @param callable $func_name
+     * @param array $params
+     * @return mixed - make dir & file if not exists, or refresh
+     */
     public static function refresh($func_name, $params) {
         $test = call_user_func_array($func_name, $params);
         $cache_path = self::getCachePath($func_name, $params);
@@ -250,6 +257,11 @@ class Cache {
         return $test;
     }
 
+    /**
+     * @param callable $func_name
+     * @param array $params
+     * @return mixed
+     */
     public static function getCachePath($func_name, $params) {
         $id = md5(implode('', $params));
         $func_name = str_replace('\\', '_', $func_name);
